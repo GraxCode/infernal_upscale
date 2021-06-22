@@ -1,23 +1,43 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:6.0.0'
+    }
+}
+
 plugins {
+    id 'com.github.johnrengelman.shadow' version '6.0.0'
     id 'java'
 }
 
-group 'org.example'
-version '1.0-SNAPSHOT'
+group 'me.nov.infernalupscale'
+version '1.1'
+
 repositories {
     mavenCentral()
-    maven {
-        url = uri("https://oss.sonatype.org/content/repositories/snapshots/")
-    }
 }
 
 
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-    implementation("com.github.weisj:darklaf-core:latest.integration")
+    implementation 'com.github.weisj:darklaf-extensions-rsyntaxarea:0.3.4'
+    implementation 'com.github.weisj:darklaf-core:2.6.1'
 }
 
 test {
     useJUnitPlatform()
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Infernal Upscale',
+                'Implementation-Version': version,
+                'Main-Class': 'me.nov.infernalupscale.gui.UpscaleGUI'
+    }
 }

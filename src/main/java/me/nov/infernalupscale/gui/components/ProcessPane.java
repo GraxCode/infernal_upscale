@@ -55,6 +55,9 @@ public class ProcessPane extends JPanel {
     System.out.println(outputs.getAbsolutePath());
     List<File> mats = Arrays.stream(matsFolder.listFiles()).filter(file -> file.getName().endsWith(".mat")).collect(Collectors.toList());
     int length = mats.size();
+    if (length == 0) {
+      JOptionPane.showMessageDialog(null, "No mat files found inside the folder. Please check the path.", "Error occurred", JOptionPane.ERROR_MESSAGE);
+    }
     for (int i = 0; i < mats.size(); i++) {
       System.gc(); // trying to be smarter than the JVM
       File matFile = mats.get(i);
@@ -84,7 +87,7 @@ public class ProcessPane extends JPanel {
         BufferedImage renderedImage = tx.getImg();
         boolean smallSize = tx.sizeX * tx.sizeY <= maxPixels;
 
-        if (smallSize && renderedImage != null ) {
+        if (smallSize && renderedImage != null) {
           hasAtLeastOne = true;
           ImageIO.write(renderedImage, "png", new File(inputs, mat.name + "_t" + j + ".png"));
         } else {

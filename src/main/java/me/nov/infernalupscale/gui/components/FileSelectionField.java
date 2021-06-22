@@ -1,5 +1,6 @@
 package me.nov.infernalupscale.gui.components;
 
+import com.github.weisj.darklaf.ui.text.DarkTextFieldUI;
 import me.nov.infernalupscale.gui.UpscaleGUI;
 import me.nov.infernalupscale.gui.utils.SwingUtils;
 
@@ -18,14 +19,17 @@ public class FileSelectionField extends JTextField {
   protected final String desc;
   protected final String fileType;
   public File file;
+  private String hint;
 
-  public FileSelectionField(String desc, String fileType) {
+  public FileSelectionField(String desc, String fileType, String hint) {
     this.desc = desc;
     this.fileType = fileType;
+    this.hint = hint;
     setDefaultText();
     this.setLayout(new BorderLayout());
     this.requestFocus();
     JLabel label = new JLabel(SwingUtils.getIcon("/menu-open.svg", true));
+    label.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     this.add(label, BorderLayout.EAST);
     String oldPath = UpscaleGUI.PROPS.getProperty(getPropName());
     if (oldPath != null) {
@@ -52,6 +56,10 @@ public class FileSelectionField extends JTextField {
         if (result == JFileChooser.APPROVE_OPTION) {
           File input = jfc.getSelectedFile();
           setFile(input);
+          if (file != null)
+            setText(file.getName());
+          else
+            setDefaultText();
         }
       }
     });
@@ -66,10 +74,12 @@ public class FileSelectionField extends JTextField {
 
       @Override
       public void focusLost(FocusEvent focusEvent) {
+        if (getText().isEmpty())
+          file = null;
         handleType();
         if (file != null)
           setText(file.getName());
-         else
+        else
           setDefaultText();
       }
     });
@@ -81,7 +91,8 @@ public class FileSelectionField extends JTextField {
   }
 
   private void setDefaultText() {
-    this.setText("Click to select a " + (fileType == null ? "folder" : "file"));
+    this.setText("");
+    putClientProperty(DarkTextFieldUI.KEY_DEFAULT_TEXT, "Select a " + (fileType == null ? "folder" : "file") + hint);
   }
 
   private boolean setFile(File input) {

@@ -49,7 +49,7 @@ public class UpscaleGUI extends JFrame {
   }
 
   public UpscaleGUI() {
-    this.setTitle("Infernal Upscaler 1.0");
+    this.setTitle("Infernal Upscaler 1.1");
     this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     this.setIconImage(SwingUtils.iconToFrameImage(SwingUtils.getIcon("/colors.svg"), this));
     this.initializeFrame();
@@ -91,10 +91,10 @@ public class UpscaleGUI extends JFrame {
     gbc.weightx = 1.0;
     gbc.weighty = 1.0;
 
-    Supplier<File> python = addField(selection, gbc, "Python 3+ executable", "");
-    Supplier<File> esrgan = addField(selection, gbc, "JoeyBallentine's ESRGAN upscale.py", "py");
-    Supplier<File> model = addField(selection, gbc, "ESRGAN model", "pth");
-    Supplier<File> mats = addField(selection, gbc, "Texture folder with MATs", null);
+    Supplier<File> python = addField(selection, gbc, "Python 3+ executable", "", ", leave empty for default");
+    Supplier<File> esrgan = addField(selection, gbc, "JoeyBallentine's ESRGAN upscale.py", "py", "");
+    Supplier<File> model = addField(selection, gbc, "ESRGAN model", "pth", " (recommended: \"Fatality x4\")");
+    Supplier<File> mats = addField(selection, gbc, "Texture folder with MATs", null, " with all MAT files");
 
     gbc.fill = GridBagConstraints.NONE;
     gbc.anchor = GridBagConstraints.CENTER;
@@ -125,7 +125,7 @@ public class UpscaleGUI extends JFrame {
       jtp.setSelectedIndex(1);
       new Thread(() -> {
         try {
-          processPane.start(python.get(), esrgan.get(), model.get(), mats.get(), cpu.isSelected(), alphaMode.isSelected(),maxSize.calc());
+          processPane.start(python.get(), esrgan.get(), model.get(), mats.get(), cpu.isSelected(), alphaMode.isSelected(), maxSize.calc());
         } catch (IOException e) {
           e.printStackTrace();
         }
@@ -134,12 +134,12 @@ public class UpscaleGUI extends JFrame {
     selection.add(start, gbc);
 
     jtp.addTab("Config", SwingUtils.getIcon("/config.svg", true), selection);
-    jtp.addTab("Process", SwingUtils.getIcon("/compile.svg", true), SwingUtils.pad(processPane = new ProcessPane(), 32, 32, 32, 32));
+    jtp.addTab("Progress", SwingUtils.getIcon("/compile.svg", true), SwingUtils.pad(processPane = new ProcessPane(), 32, 32, 32, 32));
     cp.add(jtp, BorderLayout.CENTER);
     setContentPane(cp);
   }
 
-  private Supplier<File> addField(JPanel selection, GridBagConstraints gbc, String desc, String fileType) {
+  private Supplier<File> addField(JPanel selection, GridBagConstraints gbc, String desc, String fileType, String hint) {
     gbc.gridx = 0;
     gbc.gridwidth = 1;
     gbc.fill = GridBagConstraints.NONE;
@@ -149,7 +149,7 @@ public class UpscaleGUI extends JFrame {
     gbc.gridwidth = 3;
     gbc.fill = GridBagConstraints.HORIZONTAL;
     gbc.anchor = GridBagConstraints.CENTER;
-    FileSelectionField component = new FileSelectionField(desc, fileType);
+    FileSelectionField component = new FileSelectionField(desc, fileType, hint);
     selection.add(component, gbc);
     gbc.gridy++;
     return component.makeSupplier();
