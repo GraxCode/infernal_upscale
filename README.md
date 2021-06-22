@@ -6,6 +6,9 @@ Then extract the MAT's of the level CND file.
 Use this tool to upscale the MAT files and repack them into the CND (or use NDY).
 Start the game and enjoy cool graphics!
 
+![img](pics/img.png)   
+![img_1](pics/img_1.png)
+
 ## Copyright notice
 
 This tool does not contain any copyrighted code, images or assets of the game. 
